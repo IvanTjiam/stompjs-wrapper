@@ -115,11 +115,28 @@ export default class SocketClient {
     }
   }
 
-  publish(destination, body) {
+  publish(destination, body, headers) {
+    if (this.client && this.isConnected) {
+      let payload = { destination, body };
+      if (typeof headers == "boolean") {
+        payload.skipContentLengthHeader = headers;
+      } else if (_isObject(headers)) {
+        payload.headers = headers;
+      }
+      this.client.publish(payload);
+    } else {
+      console.error(
+        `Cannot send message to ${destination}\n No socket connected`
+      );
+    }
+  }
+
+  publishBinary(destination, binaryBody, headers) {
     if (this.client && this.isConnected) {
       this.client.publish({
         destination,
-        body
+        binaryBody,
+        headers
       });
     } else {
       console.error(
@@ -168,5 +185,9 @@ export default class SocketClient {
     } else {
       console.log(`Already subscribed to ${destination}`);
     }
+  }
+
+  _isObject() {
+    return !(value instanceof Date) && !Array.isArray(value) && !Object.is(value, null) && !Object.is(value, undefined) && !(value instanceof Function);
   }
 }
