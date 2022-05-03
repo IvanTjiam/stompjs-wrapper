@@ -85,10 +85,10 @@ Send binary message to destination
 // )
 const jsonToBinary = (json) => {
     let str = JSON.stringify(json, null, 0);
-	let res = new Uint8Array(str.length);
-	for (let i = 0; i < str.length; i++)
-		res[i] = str.charCodeAt(i);
-	return res;
+    let res = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++)
+        res[i] = str.charCodeAt(i);
+    return res;
 }
 socket.publishBinary(
     "/topic/posts",
